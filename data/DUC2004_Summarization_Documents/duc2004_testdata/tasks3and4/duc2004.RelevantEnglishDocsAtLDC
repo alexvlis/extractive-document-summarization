@@ -1,0 +1,67 @@
+Additional task 3/4 relevant English documents available from LDC
+to DUC 2004 participants as an e-corpus. These are not available from
+NIST for licensing reasons.
+
+Corpus title: AQCUAINT Supplement for DUC2004
+LDC catalog number: LDC2004E06 
+
+To access the data, contact LDC's membership group at
+<ldc@ldc.upenn.edu>, providing your DUC contact information (name,
+organization name, snail mail address, email address and phone number)
+and requesting the above corpus ID.  You will be sent access
+instructions for the FTP file as soon as you have signed the
+appropriate user agreements. You will need to extract the individual
+documents from the files you download.
+
+d1001t
+VOA19981218.1600.0804
+NBC19981219.1830.0765
+CNN19981217.0130.0120
+PRI19981216.2000.1819
+CNN19981220.1600.0959
+
+d1003t
+CNN19981031.1600.0050
+PRI19981102.2000.0851
+NBC19981102.1830.0474
+CNN19981102.1600.0182
+CNN19981101.1600.0319
+
+d1005t
+CNN19981219.0130.0944
+ABC19981219.1830.0081
+NBC19981218.1830.0077
+VOA19981221.1600.1958
+VOA19981223.0500.2205
+CNN19981220.1000.0050
+
+d1011t
+VOA19981201.1600.0173
+
+d1012t
+CNN19981114.1600.1509
+VOA19981230.0500.1013
+
+d1014t
+VOA19981214.1600.0589
+VOA19981215.0500.0822
+
+d1018t
+VOA19981229.1600.1830
+CNN19981229.1130.0297
+VOA19981230.0500.2034
+VOA19981231.0500.0629
+CNN19981229.1600.0221
+CNN19981230.1130.0331
+
+d1023t
+CNN19981124.2130.0569
+
+d1038t
+CNN19981014.2130.0180
+
+d1043t
+CNN19981105.1130.0611
+CNN19981107.1300.0939
+CNN19981103.1130.0308
+VOA19981104.1600.1879

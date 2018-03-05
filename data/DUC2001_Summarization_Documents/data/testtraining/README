@@ -1,0 +1,14 @@
+The file Duc2001testtraining.tar.gz was kindly provided by Terry
+Copeck at the University of Ottawa for DUC 2002. 
+
+It contains the usual two-level topic/document/ directory
+organization.  Within each document directory are three files:
+'<doc>.abs' and '<doc>.body' contain respectively the assessor's
+summary and the document body (with none of the tagged data that lie
+outside the body and that have come up in recent list discussion).  A
+third '<doc>.txt' file contains a concatenation of abstract and body
+prefixed by 'Abstract:' and 'Introduction:' headings (for systems that
+want to take the document apart themselves).
+
+All files are plain vanilla ASCII with DOS line endings (the HTML tags
+were stripped out of the summaries on a PC).
