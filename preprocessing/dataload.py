@@ -16,7 +16,6 @@ def parsePerdocs(path):
     # load all lines into a single string
     fullText = f.read().replace("\n", " ")
     f.close()
-    #print(fullText)
     summaries = {} # { docID : summary }
     sumIndex = fullText.find("DOCREF=")
     while sumIndex != -1:
@@ -77,7 +76,6 @@ def loadDUC(dataRoot, summarySize, saliency):
         path = x[0]
         dirs = x[1]
         files = x[2]
-        #print(x)
         # if docs:
         if len(dirs) == 0: 
             if "perdocs" not in files:
@@ -85,30 +83,16 @@ def loadDUC(dataRoot, summarySize, saliency):
                 for f in files:
                     # open, store in the dict as { id : (sentences, []) }
                     try:
-                        #tree = xet.parse(path + "/" + f).getroot()
-                        #sents = []
-                        #text = tree.findall("TEXT")
                         text = extractText(path + "/" + f)
-                        #rawData[f], s = splitAndSanitizeIntoSentences(text)
                         totalSentences += len(text)
                         rawData[f] = text
                     except Exception as e:          
                         print("  ***", path + "/" + f) 
                         print(e)
             else:
-                #totalSentences += 1
-                #print("  perdocs:", path)
-                # look in perdocs
-                print(path + "/perdocs")
-                #tree = xet.parse(path + "/perdocs")
                 summaries = parsePerdocs(path + "/perdocs")
                 for k in summaries.keys():
                     rawSummaries[k] = summaries[k]
-                # for each docID:
-                #for summary in tree.findall("SUM"):
-                #    print(summary.attrib)
-                    # compute saliency score
-                    # store in dict as { id : (sentences, saliency scores) }
 
     incorrect = 0
     totalSentences = 0
@@ -116,16 +100,12 @@ def loadDUC(dataRoot, summarySize, saliency):
         if k not in rawSummaries:
             print(" key not found in summaries", k)
             incorrect += len(rawData[k])
-            #totalSentences -= len(rawData[k])
             continue
         totalSentences += len(rawData[k])
-        #print(" ", k, "(" + str(len(rawData[k])) + ", " + str(len(rawSummaries[k])) + ")")
-    #print(" total incorrect:", incorrect, "total sentences:", totalSentences)
      
     cind = 0
     seen = 0
     nx3output = np.zeros((totalSentences, 3), dtype=object)
-    #print(summaries.keys())
     for k in rawData.keys():
         if k not in rawSummaries.keys():
             continue
@@ -136,27 +116,8 @@ def loadDUC(dataRoot, summarySize, saliency):
             nx3output[cind, 1] = s
             nx3output[cind, 2] = saliency(s, rawSummaries[k]) 
             cind += 1
-    #print(cind, totalSentences)
-    #print(seen, len(rawData))
-
 
     return nx3output
-        # get the docs
-        # get the summaries -- in perdocs (size only 100?) 
-        
-        # for each sentence
-            # compute saliency score
-
-        # increment running number of sentences by |docs|
-
-    # create running count x 3 np.array
-    # [ doc ID | sentence | saliency ]
-
-    # for each k
-        # get the dict k
-        # for each sentence in dict[k]
-            # store in output array [ k | sentence | saliency score ] 
-    
 
 def dummy(sentence, summary):
     if sentence in summary:
