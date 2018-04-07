@@ -12,7 +12,7 @@ from keras.preprocessing.sequence import pad_sequences
 
 def embed_sentences(sentences, word2vec_limit = 50000 , NUM_WORDS=20000):   
     #Load Google pre-trained words as a model
-    embedding_model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True, limit=word2vec_limit)
+    embedding_model = gensim.models.KeyedVectors.load_word2vec_format('../word2vec/GoogleNews-vectors-negative300.bin', binary=True, limit=word2vec_limit)
     #Convert the model as a dictionnary word_vectors["hello"] will return a vector like [0.3, 3, ... , -4]
     word_vectors = embedding_model.wv
     print("Embedding for 'hello': ", word_vectors["hello"], "\n")
@@ -43,6 +43,8 @@ def embed_sentences(sentences, word2vec_limit = 50000 , NUM_WORDS=20000):
     
     return embedded_sentences
 
-# For debugging purpose
-embedded_sentences = embed_sentences(["It's the first sentence!","it is the second sentence"])
-print(embedded_sentences)
+
+if __name__ == "__main__":
+    # For debugging purpose
+    embedded_sentences = embed_sentences(["It's the first sentence!","it is the second sentence"])
+    print(embedded_sentences)
