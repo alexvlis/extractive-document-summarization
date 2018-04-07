@@ -1,0 +1,3 @@
+[submodule "preprocessing/pyrouge"]
+	path = preprocessing/pyrouge
+	url = https://github.com/andersjo/pyrouge.git
