@@ -114,7 +114,11 @@ def loadDUC(dataRoot, summarySize, saliency):
         for s in sentences:
             nx3output[cind, 0] = k
             nx3output[cind, 1] = s
-            nx3output[cind, 2] = saliency(s, rawSummaries[k]) 
+            #print(np.array([s]), np.array(rawSummaries[k])[2])
+#            print("SALIENCY:", saliency(np.array([s]), np.array(rawSummaries[k])))
+            print("s", np.array([s]), "\nsummary", np.array(rawSummaries[k]))
+            print()
+            nx3output[cind, 2] = saliency(np.array([s]), np.array(rawSummaries[k])) 
             cind += 1
 
     return nx3output
