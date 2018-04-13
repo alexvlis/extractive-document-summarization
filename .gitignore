@@ -3,3 +3,5 @@ GoogleNews-vectors-negative300.bin
 __pycache__
 *.pyc
 *.swp
+preprocessing/model_summaries/
+preprocessing/system_summaries/
