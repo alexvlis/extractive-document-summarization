@@ -5,7 +5,7 @@ Usage:
     s = r.saliency(reference, system)    
 '''
 from pyrouge import Rouge155
-
+import numpy as np
 
 class Rouge():
     def __init__(self, alpha=0.5):
@@ -19,7 +19,11 @@ class Rouge():
         self.alpha = alpha
 
     def saliency(self, reference=None, system=None):
-        #TODO: write sentences to files#
+        if reference is not None:
+            np.savetxt("model_summaries/text.A.001.txt", reference, newline="\n", fmt="%s")
+        
+        if system is not None:
+            np.savetxt("system_summaries/text.001.txt", system, newline="\n", fmt="%s")
 
         output = self.r.convert_and_evaluate()
         output = self.r.output_to_dict(output)
@@ -29,5 +33,8 @@ class Rouge():
         return self.alpha * R1 + (1 - self.alpha) * R2
 
 if __name__ == "__main__":
+    ref = np.array(["blah blah blah", "motherfucker"])
+    model = np.array(["motherfucker", "blah"])
+
     r = Rouge()
-    print(r.saliency())
+    print(r.saliency(ref, model))
