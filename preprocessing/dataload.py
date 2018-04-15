@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 import os
 
 
@@ -128,13 +129,22 @@ def loadDUC(dataRoot, summarySize, saliency):
 
     return nx3output
 
+# returns numpy array with the information
+def loadFromPickle(fileName):
+    f = open(fileName, "rb")
+    data = pickle.load(f)
+    f.close()
+    return data 
+
 def dummy(sentence, summary):
     if sentence in summary:
         return 1
     return 0
 
 def main():
-    data = loadDUC("../data/DUC2001_Summarization_Documents/data/training", 100, dummy)
+    #data = loadDUC("../data/DUC2001_Summarization_Documents/data/training", 100, dummy)
+    #print(data)
+    data = loadFromPickle("sentencesToSaliency.pickle")
     print(data)
 
 if __name__ == "__main__":
