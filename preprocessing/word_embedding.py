@@ -23,7 +23,8 @@ def embed_sentences(data, word2vec_limit = 50000 , NUM_WORDS=20000):
                             - ex: 20000
        
     Returns:
-        np.array        - 3D array: 1D for the sentences, 1D for the words and 1D for the word2vec dimensions. 
+        input_output        - np.array [embedding matrix , saliency score]
+                        
     '''
     
     #setences ex: ["It's the first sentence!","it is the second sentence"]
@@ -59,13 +60,20 @@ def embed_sentences(data, word2vec_limit = 50000 , NUM_WORDS=20000):
     #Build a 3D array: 1D for the sentences, 1D for the words and 1D for the word2vec dimensions. 
     embedded_sentences = np.stack([np.stack([embedding_weights[token] for token in sentence]) for sentence in padded_sequences])
     
+    #Add back the saliency scores
+    #input_output = np.column_stack((embedded_sentences,data[:,2]))    
+    
+    input_output = np.array([])
+    for i in range(len(data)):
+        input_output = np.append(input_output,np.array([ embedded_sentences[i] , data[i,2] ]) )
+        
     del embedding_model
     
-    return embedded_sentences
+    return input_output
 
 
 if __name__ == "__main__":
     # For debugging purpose
-    embedded_sentences = embed_sentences(np.array([[1, "It's the first sentence and I feel good about!", 0.2], 
-                                          [2,"it is the second sentence", 0.8]]))
+    embedded_sentences = embed_sentences(np.array([[1, "hello!", 0.2], 
+                                          [2,"cheese cake", 0.8]]))
     print(embedded_sentences)
