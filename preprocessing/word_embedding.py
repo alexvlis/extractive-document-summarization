@@ -11,6 +11,21 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 def embed_sentences(sentences, word2vec_limit = 50000 , NUM_WORDS=20000):   
+    '''
+    Embed sentences
+
+    Params:
+        sentences        - a list of sentences
+                            - ex: ["It's the first sentence and I feel good about!","it is the second sentence"]
+        word2vec_limit   - int: number of words used in the word embedding provided by Google
+                            - ex: 50000
+        NUM_WORDS        - int: The maximum number of words to keep, based on word frequency. Only the most common num_words words will be kept.
+                            - ex: 20000
+       
+    Returns:
+        np.array        - 3D array: 1D for the sentences, 1D for the words and 1D for the word2vec dimensions. 
+    '''
+    
     #Load Google pre-trained words as a model
     embedding_model = gensim.models.KeyedVectors.load_word2vec_format('./word2vec/GoogleNews-vectors-negative300.bin', binary=True, limit=word2vec_limit)
     #Convert the model as a dictionnary word_vectors["hello"] will return a vector like [0.3, 3, ... , -4]
