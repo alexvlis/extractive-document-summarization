@@ -115,10 +115,14 @@ def loadDUC(dataRoot, summarySize, saliency):
             nx3output[cind, 0] = k
             nx3output[cind, 1] = s
             #print(np.array([s]), np.array(rawSummaries[k])[2])
-#            print("SALIENCY:", saliency(np.array([s]), np.array(rawSummaries[k])))
-            print("s", np.array([s]), "\nsummary", np.array(rawSummaries[k]))
-            print()
-            nx3output[cind, 2] = saliency(np.array([s]), np.array(rawSummaries[k])) 
+            #print("s", np.array([s]), "\nsummary", np.array(rawSummaries[k]))
+            #print("SALIENCY:", saliency(np.array([s]), np.array(rawSummaries[k])))
+            try:
+#            print()
+                nx3output[cind, 2] = saliency(np.array([s]), np.array(rawSummaries[k])) 
+            except Exception as e:
+                print("ERROR: Skipping sentence:", s)
+                nx3output[cind, 2] = -1
             cind += 1
 
     return nx3output
