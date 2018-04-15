@@ -31,7 +31,7 @@ def embed_sentences(data, word2vec_limit = 50000 , NUM_WORDS=20000):
     sentences = data[:,1]
     
     #Load Google pre-trained words as a model
-    embedding_model = gensim.models.KeyedVectors.load_word2vec_format('./word2vec/GoogleNews-vectors-negative300.bin', binary=True, limit=word2vec_limit)
+    embedding_model = gensim.models.KeyedVectors.load_word2vec_format('../word2vec/GoogleNews-vectors-negative300.bin', binary=True, limit=word2vec_limit)
     #Convert the model as a dictionnary word_vectors["hello"] will return a vector like [0.3, 3, ... , -4]
     word_vectors = embedding_model.wv
     #print("Embedding for 'hello': ", word_vectors["hello"], "\n")
