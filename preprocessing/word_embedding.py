@@ -12,7 +12,7 @@ from keras.preprocessing.sequence import pad_sequences
 
 def embed_sentences(sentences, word2vec_limit = 50000 , NUM_WORDS=20000):   
     #Load Google pre-trained words as a model
-    embedding_model = gensim.models.KeyedVectors.load_word2vec_format('../word2vec/GoogleNews-vectors-negative300.bin', binary=True, limit=word2vec_limit)
+    embedding_model = gensim.models.KeyedVectors.load_word2vec_format('./word2vec/GoogleNews-vectors-negative300.bin', binary=True, limit=word2vec_limit)
     #Convert the model as a dictionnary word_vectors["hello"] will return a vector like [0.3, 3, ... , -4]
     word_vectors = embedding_model.wv
     print("Embedding for 'hello': ", word_vectors["hello"], "\n")
@@ -33,6 +33,8 @@ def embed_sentences(sentences, word2vec_limit = 50000 , NUM_WORDS=20000):
     embedding_weights = {key: embedding_model[word] if word in word_vectors.vocab else
                               np.random.uniform(-0.25, 0.25, word_vectors.vector_size)
                         for word, key in word_index.items()}
+    # Add the token "0", used for padding
+    embedding_weights[0] = np.zeros(word_vectors.vector_size)
    
     print("Embedding weights: " , embedding_weights , "\n")
     
@@ -46,5 +48,5 @@ def embed_sentences(sentences, word2vec_limit = 50000 , NUM_WORDS=20000):
 
 if __name__ == "__main__":
     # For debugging purpose
-    embedded_sentences = embed_sentences(["It's the first sentence!","it is the second sentence"])
+    embedded_sentences = embed_sentences(["It's the first sentence and I feel good about!","it is the second sentence"])
     print(embedded_sentences)
