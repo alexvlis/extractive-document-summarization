@@ -60,16 +60,37 @@ def train(model, x_train, y_train, val_train_ratio=0.2, epochs=1000, batch_size=
     return history
 
 def load_data():
-    data = pickle.load(open("preprocessing/wordEmbeddingsToSaliency.pickle", "rb"))
+    print("loading pickle files...")
+    data1 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency1.pickle", "rb"))
+    data2 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency2.pickle", "rb"))
+    data3 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency3.pickle", "rb"))
+    data4 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency4.pickle", "rb"))
+    data5 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency5.pickle", "rb"))
+    #data6 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency6.pickle", "rb"))
+    #data7 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency7.pickle", "rb"))
+    #data8 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency8.pickle", "rb"))
+
+    print("concatenating data...")
+    data = np.concatenate((data1, data2, data3, data4, data5), axis=0)
+
+    print("extracting x and y")
     x_raw = data[::2]
     y = data[1::2]
 
+    print("convert x to numpy array")
     x = list()
     for emb in x_raw:
         x.append(emb.tolist())
 
     x = np.array(x)
     x = np.expand_dims(x, axis=1)
+
+    mask = y==-1
+
+    print("remove -1s")
+    x = x[~mask, :]
+    y = y[~mask]
+
     return x, y
 
 def main():
@@ -86,6 +107,7 @@ def main():
     val_train_ratio = 0.2
 
     x_train, y_train = load_data()
+    print("training data:", x_train.shape, y_train.shape)
 
     #x_train, x_test, y_train, y_test = test_train_split(x, y, test_size=test_train_ratio)
 
