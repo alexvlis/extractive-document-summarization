@@ -5,6 +5,7 @@ from word_embedding import embed_sentences
 import numpy as np
 import pandas as pd
 import pickle
+import sys
 
 
 def buildData(datasetRoot, saliency):
@@ -31,16 +32,42 @@ def main():
 
     # use if you have the pickle file
     data = loadFromPickle("sentencesToSaliency.pickle")
+    data = embed_sentences(data)
+    print(data)
     print("loaded data:", data.shape)
+    print("size:", sys.getsizeof(data))
 
-    fileName = "wordEmbeddingsToSaliency.pickle"
+    #fileName = "wordEmbeddingsToSaliency1.pickle"
     
-    f = open(fileName, "wb")
-    print("saving data to", fileName)
+    #f = open(fileName, "wb")
+    #print("saving data to", fileName)
     
-    pickle.dump(data, f)
-    f.close()
-    print("Saved data!")
+    #pickle.dump(data[:int(len(data)/2)], f)
+    #f.close()
+    #print("saved first round")
+
+    #fileName = "wordEmbeddingsToSaliency2.pickle"
+    #f = open(fileName, "wb")
+    #print("saving second set of data to", fileName)
+    #pickle.dump(data[int(len(data)/2):], f)
+    #f.close()
+
+    #print("Saved data!")
+
+    num_parts = 8
+    fileName = "wordEmbeddingsToSaliency"
+    start = 0
+    
+    for i in range(num_parts):
+        print("writing part,",i)
+        f = open(fileName + str(i + 1) + ".pickle", "wb")
+        if i < num_parts - 1:
+            pickle.dump(data[start:i * len(data)//num_parts], f)
+        else:
+            pickle.dump(data[start:], f)
+        f.close()
+        start = i * len(data)//num_parts
+        print(start)
 
     
     
