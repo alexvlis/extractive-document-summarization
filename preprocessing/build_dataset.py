@@ -59,14 +59,14 @@ def main():
     start = 0
     
     for i in range(num_parts):
-        print("writing part,",i)
+        print("writing part,",i + 1)
         f = open(fileName + str(i + 1) + ".pickle", "wb")
         if i < num_parts - 1:
-            pickle.dump(data[start:i * len(data)//num_parts], f)
+            pickle.dump(data[start:(i + 1) * len(data)//num_parts], f)
         else:
             pickle.dump(data[start:], f)
         f.close()
-        start = i * len(data)//num_parts
+        start = (i + 1) * len(data)//num_parts
         print(start)
 
     
