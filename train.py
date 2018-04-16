@@ -17,6 +17,7 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers import MaxPooling2D
 from keras.layers.convolutional import Conv2D
 from keras import regularizers
+from keras.optimizers import Adadelta
 
 #from sklearn.model_selection import train_test_split
 
@@ -39,14 +40,14 @@ def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
     model.add(MaxPooling2D(pool_size=(400, 1)))
 
     #Fully Connected + Dropout + sigmoid
-    model.add(Dropout(dropout))
     model.add(Flatten())
+    model.add(Dropout(dropout))
     model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(reg)))
     
     #In addition, an l2−norm constraint of the weights w_r is imposed during training as well
 
     model.compile(loss='binary_crossentropy',
-                  optimizer='adadelta',
+                  optimizer=Adadelta(lr=0.001, rho=0.95, epsilon=None, decay=0.1),
                   metrics=['mae'])
     return model
 
@@ -66,22 +67,24 @@ def load_data():
     data3 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency3.pickle", "rb"))
     data4 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency4.pickle", "rb"))
     data5 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency5.pickle", "rb"))
-    #data6 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency6.pickle", "rb"))
-    #data7 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency7.pickle", "rb"))
-    #data8 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency8.pickle", "rb"))
+    data6 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency6.pickle", "rb"))
+    data7 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency7.pickle", "rb"))
+    data8 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency8.pickle", "rb"))
 
     print("concatenating data...")
-    data = np.concatenate((data1, data2, data3, data4, data5), axis=0)
+    data = np.concatenate((data1, data2, data3, data4, data5, data6, data7, data8), axis=0)
 
     print("extracting x and y")
     x_raw = data[::2]
     y = data[1::2]
+    del data
 
     print("convert x to numpy array")
     x = list()
     for emb in x_raw:
         x.append(emb.tolist())
 
+    del x_raw
     x = np.array(x)
     x = np.expand_dims(x, axis=1)
 
