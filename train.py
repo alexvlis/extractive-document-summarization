@@ -7,6 +7,9 @@ import warnings
 warnings.filterwarnings("ignore")
 import pickle
 import numpy as np
+
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 from keras.models import Sequential
