@@ -19,7 +19,6 @@ from keras.layers.convolutional import Conv2D
 from keras import regularizers
 from keras.optimizers import Adadelta
 
-#from sklearn.model_selection import train_test_split
 
 # Build model
 def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
@@ -47,7 +46,7 @@ def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
     #In addition, an l2−norm constraint of the weights w_r is imposed during training as well
 
     model.compile(loss='binary_crossentropy',
-                  optimizer=Adadelta(lr=0.001, rho=0.95, epsilon=None, decay=0.1),
+                  optimizer=Adadelta(),
                   metrics=['mae'])
     return model
 
@@ -74,26 +73,23 @@ def load_data():
     print("concatenating data...")
     data = np.concatenate((data1, data2, data3, data4, data5, data6, data7, data8), axis=0)
 
-    print("extracting x and y")
-    x_raw = data[::2]
+    print("extracting x and y...")
+    x = data[::2]
     y = data[1::2]
     del data
 
-    print("convert x to numpy array")
-    x = list()
-    for emb in x_raw:
-        x.append(emb.tolist())
-
-    del x_raw
-    x = np.array(x)
+    print("converting x to np tensor...")
+    x = np.dstack(x)
+    x = np.rollaxis(x, -1)
     x = np.expand_dims(x, axis=1)
 
     mask = y==-1
 
-    print("remove -1s")
+    print("removing -1s...")
     x = x[~mask, :]
     y = y[~mask]
 
+    print("data loaded.")
     return x, y
 
 def main():
@@ -112,13 +108,13 @@ def main():
     x_train, y_train = load_data()
     print("training data:", x_train.shape, y_train.shape)
 
-    #x_train, x_test, y_train, y_test = test_train_split(x, y, test_size=test_train_ratio)
-
     model = build_model((1, x_train.shape[2], x_train.shape[3]), conv_window_size, num_filters, reg, dropout)
     history = train(model, x_train, y_train, val_train_ratio, epochs, batch_size)
 
+    print("Saving model...")
     model.model.save('model.h5') 
 
+    print("Plotting...")
     f, (ax1, ax2) = plt.subplots(2, 1)
     ax1.plot(range(1, epochs+1), history.history['val_mean_absolute_error'], 'tab:blue', label="validation MAE")
     ax1.plot(range(1, epochs+1), history.history['mean_absolute_error'], 'tab:red', label="training MAE")
@@ -130,6 +126,7 @@ def main():
     ax2.legend()
 
     f.savefig('training.png', dpi=300)
+    print("Done.")
 
 if __name__ == "__main__":
     main()
