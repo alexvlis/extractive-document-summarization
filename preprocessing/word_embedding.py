@@ -23,7 +23,7 @@ def embed_sentences(data, word2vec_limit = 50000 , NUM_WORDS=20000):
                             - ex: 20000
        
     Returns:
-        input_output        - np.array [embedding matrix , saliency score]
+        input_output        - np.array [ embedding matrix , doc id, saliency score ]
                         
     '''
     
@@ -65,7 +65,7 @@ def embed_sentences(data, word2vec_limit = 50000 , NUM_WORDS=20000):
     
     input_output = np.array([])
     for i in range(len(data)):
-        input_output = np.append(input_output,np.array([ embedded_sentences[i] , data[i,2] ]) )
+        input_output = np.append(input_output,np.array([ embedded_sentences[i] , data[i,2], data[i,0]]) )
         
     del embedding_model
     
