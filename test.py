@@ -1,80 +1,91 @@
 import numpy as np
-import pickle
 from keras.models import load_model
 from preprocessing.dataload import loadDUC
 from preprocessing.rouge import Rouge
 
-def dummy_prediction():
-    return np.array([0.9,0.1, 0.2, 0.8])
+def dummy_rouge(sentence, summary, alpha=0.5):
+    if sentence in summary:
+        return 1
+    return 0
 
-def test(model, x_test, y_test, data_test, upper_bound = 100):
+def dummy_loadTestData():
+    testing_data = [ [ np.array(["This sentence is important for doc0." ,
+                                 "Such a sentence is irrelevent for doc 0."]), 
+                       np.random.rand(2,1,5,300), 
+                       np.array(["This sentence is important for doc0."]) ],
+                     [ np.array(["Lol that sentence is awesome for do1." , 
+                                 "No way, this is irrelevent"]), 
+                       np.random.rand(2,1,5,300), 
+                                np.array(["Lol that sentence is awesome for do1."]) ] ]
+    return testing_data
+
+def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 0.5, metric = "ROUGE1"):
     """
-        Build the actual summaries for test data.
+        Build the actual summaries for test data and evaluate them
         To do: 
             - load the actual x_test (embed test sentences) and y_test (compute rouge score)
-            - Use score and acc to see our results
-            - Use the thershold t when building the summary
-            - What to use as a final metric? Do we compare with ROUGE each sentence in the predicted summary to the actual one?  
+        
+        Parameters: 
+            testing_data           - np.array 
+                                        ex: np.array([ doc1, doc2, ... , docn])
+                                         where doci = np.array([sentences, x_test, summary])
+                                             where sentences = np.array of string
+                                                   x_test = np.array of matrices (embedded sentences)
+                                                   summaries = np.array of sentences
         
         Returns: 
-            predicted_summaries    - np.array of str:  [predicted_summary1, predicted_summary2, ... ]
-                        
-    """
-    # To Do
-    # score, acc = model.evaluate(x_test, y_test, batch_size=128)
+            eval                   - float between 0 and 1. 
+    """   
+    evals = []
     
-    # To Do
-    # predictions = model.predict(x_test, batch_size=128)
-    predictions = dummy_prediction()
+    for doc in testing_data: 
+        sentences = doc[0]
+        
+        x_test_old = doc[1]
+        (s1,s2,s3,s4) = x_test_old.shape
+        x_test = np.random.rand(s1,s2,190,s4)
+        for i in range(s1) :
+            x_test[i] = np.array( [ np.pad(x_test_old[i][0], ((190-5,0),(0,0)), 'constant') ] )
+            
+
+        true_summary = doc[2]
+        
+        predicted_scores = model.predict(x_test, batch_size=batch_size)
+        argsorted_scores= np.argsort(predicted_scores)
+        
+        predicted_summary = []
+        summary_length = 0
+        
+        i = 0
+        
+        while i < len(sentences) and summary_length < upper_bound: 
+            sentence = sentences[argsorted_scores[i]][0]
+            if ( dummy_rouge( sentence , predicted_summary ) < threshold ):
+                predicted_summary.append(sentence)
+                summary_length += len(sentence.split())
+                
+            i+=1
+        
+        #print(predicted_summary)
+        
+        if metric == "ROUGE1" :
+            N = 1
+        elif metric == "ROUGE2":
+            N = 0 
+            
+        evals.append(dummy_rouge( predicted_summary, true_summary, alpha = N))
+        
+    return np.mean(evals)
     
-    # Total number of documents
-    d = int(data_test[-1,0])
-    
-    i = 0
-    predicted_summaries = np.array([])
-    
-    # I assumed that doc_id started from 0
-    for doc_id in range(d+1):
-        # sentences_doc is a list containng all the sentences of a document with their prediected saliency score [score,sentence]
-        sentences_doc = []
-        while i < len(data_test) and int(data_test[i,0]) == doc_id:
-            sentences_doc.append([ float(predictions[i]), data_test[i,1] ])
-            i += 1
-        
-        sentences_doc = np.array(sentences_doc)
-        #sort the sentences of a doc by saliency score
-        sentences_doc = sentences_doc[sentences_doc[:,0].argsort()]
-        #Reverse the order (decreasing order)
-        sentences_doc = sentences_doc[::-1]
-        
-        predicted_summary = ""
-        
-        
-        ind = 0
-        # While the summary is not full
-        # I chose to go slitly beyond the upper_bound (one sentence beyond) but we can decide to stay under it
-        while len(predicted_summary.split()) < upper_bound:
-            sentence = sentences_doc[ind,1]
-            predicted_summary = predicted_summary+sentence
-        
-        predicted_summaries = np.append(predicted_summaries,predicted_summary)
-    
-    return predicted_summaries
 
 def main():
     model = load_model('model.h5')
     
-    #To Do: load the embedded sentences 
-    x_test = []
-    #To Do: Compute the saliency scores for testing
-    y_test = []
+    testing_data = dummy_loadTestData()
     
-    #rougeSaliency = Rouge()
-    #data_test = loadDuc("../data/DUC2002_Summarization_Documents/data/testing", upper_bound, rougeSaliency.saliency)
-    
-    data_test = np.array([ [0, "This sentence is important for doc0."], [0,"Such a sentence is irrelevent for doc 0."], [1, "Lol this sentence makes no sense for doc1."], [1,"However this one is crucial for doc1."] ])
-    predicted_summaries = test(model, x_test, y_test, data_test, upper_bound = 5) 
-    print(predicted_summaries)
+    rouge1_score = test(model, testing_data, upper_bound=5, metric = "ROUGE1")
+    #rouge2_score = test(model, testing_data, upper_bound=5, metric = "ROUGE2")
+    print(rouge1_score)
 
 if __name__ == "__main__":
     main()
