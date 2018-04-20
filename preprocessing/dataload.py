@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import os
+from word_embedding import embed_sentences
 
 
 def splitAndSanitizeIntoSentences(text):
@@ -48,6 +49,88 @@ def extractText(path):
         textIndex = fullText.find("<TEXT>", textIndex + 1)
     return sentences
     
+
+def loadTestData(dataRoot):
+    '''
+    load all of the raw files
+    '''
+    sentences = {}
+    summaries = {}   
+
+    test_data = []
+ 
+    raw_docs = dataRoot + "/docs/"
+    walker = os.walk(raw_docs)
+    for x in walker:
+        path = x[0]
+        dirs = x[1]
+        files = x[2]    
+    
+        if len(dirs) != 0:
+            continue
+    
+        
+        for f in files:
+            sentences[f] = extractText(path + "/" + f)
+        
+    raw_summaries = dataRoot + "/summaries/"
+    walker = os.walk(raw_summaries)
+    for x in walker:
+        path = x[0]
+        dirs = x[1]
+        files = x[2]
+        
+        if len(dirs) != 0:
+            continue 
+
+        for f in files:
+            tmpSummaries = parsePerdocs(path + "/" + f)
+            for k in tmpSummaries.keys():
+                summaries[k] = tmpSummaries[k]
+
+   
+    size = 0
+    hit = 0
+    hitsize = 0 
+    for s in sentences.keys():
+        if s in summaries:
+            hit += 1
+            hitsize += len(sentences[s])
+        size += len(sentences[s]) 
+        
+    print(size)
+    print(hit, "/", len(sentences))
+    print(hitsize)
+
+    
+    word_embeddings = {}
+    count = 0
+    max_size = 0
+    for s in sentences.keys():
+        arr = np.ones((len(sentences[s]), 3), dtype=object) 
+        arr[:,0] = "dummy"
+        arr[:,1] = np.array(sentences[s])
+        #print(arr.shape)
+        #print(arr)
+        #embedding = embed_sentences(arr, word2vec_limit=None, NUM_WORDS=None )
+        embedding = embed_sentences(arr)
+        embedding = embedding[0::2]
+        for e in embedding:
+            if len(e) > max_size:
+                max_size = len(e)
+        count += len(sentences[s])
+        #print(embedding.shape)
+        #print(len(embedding[0::2]))
+        test_data.append((np.array(sentences[s]), np.array(embedding), np.array(summaries[s])))
+        print("Finished", count, "of", size,"sentences --", count/size,"%", end='\r')
+            
+    print("size of test_data:", len(test_data))
+    print("maximum embedding was", max_size) 
+
+    return test_data
+        
+        
+
 
 def loadDUC(dataRoot, summarySize, saliency):
     '''
@@ -142,10 +225,11 @@ def dummy(sentence, summary):
     return 0
 
 def main():
+    data = loadTestData("../data/DUC2002_Summarization_Documents")
     #data = loadDUC("../data/DUC2001_Summarization_Documents/data/training", 100, dummy)
     #print(data)
-    data = loadFromPickle("sentencesToSaliency.pickle")
-    print(data)
+    #data = loadFromPickle("sentencesToSaliency.pickle")
+    #print(data)
 
 if __name__ == "__main__":
     main()
