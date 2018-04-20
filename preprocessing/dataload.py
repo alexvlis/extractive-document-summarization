@@ -106,6 +106,13 @@ def loadTestData(dataRoot):
     word_embeddings = {}
     count = 0
     max_size = 0
+    
+    documents_over_190 = 0
+    sentences_over_190 = 0
+    sentences_removed = 0
+    over_190 = False
+    
+
     for s in sentences.keys():
         arr = np.ones((len(sentences[s]), 3), dtype=object) 
         arr[:,0] = "dummy"
@@ -118,14 +125,32 @@ def loadTestData(dataRoot):
         for e in embedding:
             if len(e) > max_size:
                 max_size = len(e)
+            if len(e) > 190:
+                sentences_over_190 += 1
+                over_190 = True
+        if over_190:
+            documents_over_190 += 1
+            over_190 = False
+            count -= len(sentences[s])
+            sentences_removed += len(sentences[s])
+            continue
+        
         count += len(sentences[s])
         #print(embedding.shape)
         #print(len(embedding[0::2]))
         test_data.append((np.array(sentences[s]), np.array(embedding), np.array(summaries[s])))
         print("Finished", count, "of", size,"sentences --", count/size,"%", end='\r')
             
-    print("size of test_data:", len(test_data))
-    print("maximum embedding was", max_size) 
+    #print("size of test_data:", len(test_data))
+    #print("maximum embedding was", max_size) 
+    #print("docs over 190:", documents_over_190)
+    #print("sentences over 190:", sentences_over_190)
+    #print("removed sentences:", sentences_removed)
+
+    totalCount = 0
+    for x in test_data:
+        totalCount += len(x[0])
+    #print(" full count:", totalCount)
 
     return test_data
         
