@@ -14,7 +14,7 @@ def buildData(datasetRoot, saliency):
     pickle.dump(data, f)
     f.close()
     #print("saved sentences to", fileName)
-    return embed_sentences(data, num_words=None, word2veclimit=None) 
+    return embed_sentences(data, NUM_WORDS=None, word2vec_limit=None) 
 
 def saveData(filename, data):
     df = pd.DataFrame(data)
@@ -25,14 +25,14 @@ def main():
     print("got rouge")
    
     # use if you need to start from scratch 
-    data = buildData("../data/DUC2001_Summarization_Documents/data/training", rougeSaliency.saliency)    
+    #data = buildData("../data/DUC2001_Summarization_Documents/data/training", rougeSaliency.saliency)    
     #data = buildData("../data/subset/data/training", rougeSaliency.saliency)
 
     print("built data")
 
     # use if you have the pickle file
-    #data = loadFromPickle("sentencesToSaliency.pickle")
-    #data = embed_sentences(data)
+    data = loadFromPickle("sentencesToSaliency.pickle")
+    data = embed_sentences(data)
     print(data)
     print("loaded data:", data.shape)
     print("size:", sys.getsizeof(data))
