@@ -8,8 +8,8 @@ warnings.filterwarnings("ignore")
 import pickle
 import numpy as np
 
-import matplotlib as mpl
-mpl.use('Agg')
+#import matplotlib as mpl
+#mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 from keras.models import Sequential
@@ -19,6 +19,7 @@ from keras.layers.convolutional import Conv2D
 from keras import regularizers
 from keras.optimizers import Adadelta
 
+from sklearn.utils import shuffle
 
 # Build model
 def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
@@ -89,6 +90,7 @@ def load_data():
     y = y[~mask]
 
     print("data loaded.")
+    x, y = shuffle(x, y)
     return x, y
 
 def main():
@@ -99,8 +101,8 @@ def main():
     dropout = 0.5
     
     # Training parameters
-    epochs = 50
-    batch_size = 256
+    epochs = 25
+    batch_size = 128
     test_train_ratio = 0.2
     val_train_ratio = 0.2
 
@@ -125,6 +127,7 @@ def main():
     ax2.legend()
 
     f.savefig('training.png', dpi=300)
+    plt.show()
     print("Done.")
 
 if __name__ == "__main__":
