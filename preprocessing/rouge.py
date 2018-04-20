@@ -8,10 +8,10 @@ from pyrouge import Rouge155
 import numpy as np
 
 class Rouge():
-    def __init__(self, alpha=0.5):
-        self.alpha = alpha
+    def __init__(self):
+        pass
 
-    def saliency(self, reference=None, system=None):
+    def saliency(self, reference=None, system=None, alpha=0.5):
         self.r = Rouge155()
 
         self.r.model_dir = 'model_summaries'
@@ -32,7 +32,7 @@ class Rouge():
         R1 = output['rouge_1_f_score']
         R2 = output['rouge_2_f_score']
 
-        return self.alpha * R1 + (1 - self.alpha) * R2
+        return alpha * R1 + (1 - alpha) * R2
 
 if __name__ == "__main__":
     ref = np.array([" The territory's stock market opened this morning sharply lower"])
@@ -44,5 +44,5 @@ if __name__ == "__main__":
              ' '])
 
     r = Rouge()
-    print(r.saliency(ref, model))
+    print(r.saliency(ref, model, alpha=1.0))
     print(r.saliency(ref, model))
