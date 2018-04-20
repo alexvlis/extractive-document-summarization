@@ -27,7 +27,6 @@ def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
 
     # we add a Convolution 1D, which will learn num_filters
     # word group filters of size conv_window_size:
-    print(input_shape)
     model.add(Conv2D(input_shape=input_shape,
                         filters=num_filters,
                         kernel_size=(1, conv_window_size),
@@ -36,7 +35,7 @@ def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
                         strides=1,
                         data_format='channels_first'))
     
-    model.add(MaxPooling2D(pool_size=(400, 1)))
+    model.add(MaxPooling2D(pool_size=(num_filters, 1)))
 
     #Fully Connected + Dropout + sigmoid
     model.add(Flatten())
@@ -100,8 +99,8 @@ def main():
     dropout = 0.5
     
     # Training parameters
-    epochs = 10
-    batch_size = 128
+    epochs = 50
+    batch_size = 256
     test_train_ratio = 0.2
     val_train_ratio = 0.2
 
@@ -112,7 +111,7 @@ def main():
     history = train(model, x_train, y_train, val_train_ratio, epochs, batch_size)
 
     print("Saving model...")
-    model.model.save('model.h5') 
+    model.model.save('model.h5')
 
     print("Plotting...")
     f, (ax1, ax2) = plt.subplots(2, 1)
