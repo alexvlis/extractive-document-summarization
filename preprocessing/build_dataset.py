@@ -25,7 +25,7 @@ def main():
     print("got rouge")
    
     # use if you need to start from scratch 
-    #data = buildData("../data/DUC2001_Summarization_Documents/data/training", rougeSaliency.saliency)    
+    data = buildData("../data/DUC2001_Summarization_Documents/data/training", rougeSaliency.saliency)    
     #data = buildData("../data/subset/data/training", rougeSaliency.saliency)
 
     print("built data")

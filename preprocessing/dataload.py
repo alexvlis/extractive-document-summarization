@@ -2,6 +2,7 @@ import numpy as np
 import pickle
 import os
 from word_embedding import embed_sentences
+from nltk import tokenize
 
 
 def splitAndSanitizeIntoSentences(text):
@@ -18,8 +19,12 @@ def parsePerdocs(path):
     # load all lines into a single string
     fullText = f.read().replace("\n", " ")
     f.close()
+    
+    # nltk attempt
+    #return tokenize.sent_tokenize(fullText) 
     summaries = {} # { docID : summary }
     sumIndex = fullText.find("DOCREF=")
+    
     while sumIndex != -1:
         docID = fullText[sumIndex + 8:fullText.find("\"", sumIndex + 9)]
         
@@ -28,11 +33,13 @@ def parsePerdocs(path):
 
         text = fullText[startSum + 1:endSum]
 
-        summaries[docID] = text.split(".")
+        summaries[docID] = text
 
         sumIndex = fullText.find("DOCREF=", endSum) 
-
     
+    for k in summaries.keys():
+        summaries[k] = tokenize.sent_tokenize(summaries[k])
+
     return summaries
         
 def extractText(path):
@@ -40,15 +47,16 @@ def extractText(path):
 
     fullText = f.read().replace("\n", " ")
     f.close()        
-
-    sentences = []
+    sentences = ""
     textIndex = fullText.find("<TEXT>")
     while textIndex != -1: 
-        sentences.extend(fullText[textIndex + 6 : fullText.find("</TEXT>", textIndex) ].split("."))
+        #sentences.extend(fullText[textIndex + 6 : fullText.find("</TEXT>", textIndex) ])
 
+        #textIndex = fullText.find("<TEXT>", textIndex + 1)
+        sentences += fullText[textIndex + 6 : fullText.find("</TEXT>", textIndex) ]
         textIndex = fullText.find("<TEXT>", textIndex + 1)
-    return sentences
     
+    return tokenize.sent_tokenize(sentences)
 
 def loadTestData(dataRoot):
     '''
@@ -69,8 +77,8 @@ def loadTestData(dataRoot):
         if len(dirs) != 0:
             continue
     
-        
         for f in files:
+            print("file:", path + "/" + f, end="\r") 
             sentences[f] = extractText(path + "/" + f)
         
     raw_summaries = dataRoot + "/summaries/"
@@ -84,6 +92,7 @@ def loadTestData(dataRoot):
             continue 
 
         for f in files:
+            print("summary file:", path + "/" + f, end="\r") 
             tmpSummaries = parsePerdocs(path + "/" + f)
             for k in tmpSummaries.keys():
                 summaries[k] = tmpSummaries[k]
@@ -252,7 +261,7 @@ def dummy(sentence, summary):
 def main():
     data = loadTestData("../data/DUC2002_Summarization_Documents")
     #data = loadDUC("../data/DUC2001_Summarization_Documents/data/training", 100, dummy)
-    #print(data)
+    print(data)
     #data = loadFromPickle("sentencesToSaliency.pickle")
     #print(data)
 
