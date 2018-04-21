@@ -55,7 +55,7 @@ def train(model, x_train, y_train, val_train_ratio=0.2, epochs=1000, batch_size=
                         batch_size=batch_size,
                         epochs=epochs,
                         validation_split=val_train_ratio,
-                        shuffle=True,
+                        shuffle=False,
                         verbose=1)
     return history
 
