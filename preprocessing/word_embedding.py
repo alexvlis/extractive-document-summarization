@@ -71,9 +71,23 @@ def embed_sentences(data, word2vec_limit = 50000 , NUM_WORDS=20000):
     
     return input_output
 
-
+def rand_embed_sentences(data, NUM_WORDS = None): 
+    #setences ex: ["It's the first sentence!","it is the second sentence"]
+    sentences = data[:,1]
+    tokenizer = Tokenizer(num_words=NUM_WORDS)
+   
+    # Tokenize the sentences, that is to say convert the 2 sentences ["It's the first sentence!","It is the second sentence"] to 2 sequences [[1 4 2 5 3],[1 6 2 7 3]]
+    # It handles the ennoying cases (punctuation, Upper cases, etc...)
+    tokenizer.fit_on_texts(sentences)
+    sequences = tokenizer.texts_to_sequences(sentences)
+    padded_sequences = pad_sequences(sequences)
+    
+    #print('padded_sequences shape:', padded_sequences.shape)
+    
+    return padded_sequences, data[:,2]
+    
 if __name__ == "__main__":
     # For debugging purpose
-    embedded_sentences = embed_sentences(np.array([[1, "hello!", 0.2], 
+    rand_embedded_sentences = rand_embed_sentences(np.array([[1, "hello!", 0.2], 
                                           [2,"cheese cake", 0.8]]))
-    print(embedded_sentences)
+    print(rand_embedded_sentences)
