@@ -19,7 +19,7 @@ def dummy_loadTestData():
                                 np.array(["Lol that sentence is awesome for do1."]) ] ]
     return testing_data
 
-def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 0.5, metric = "ROUGE1"):
+def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 1, metric = "ROUGE1"):
     """
         Build the actual summaries for test data and evaluate them
         To do: 
@@ -47,9 +47,9 @@ def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 0
         s1 = x_test_old.shape[0]
         (s3,s4) = x_test_old[0].shape
         print(s1,s3,s4)
-        x_test = np.random.rand(s1,1,190,s4)
+        x_test = np.random.rand(s1,1,378,s4)
         for i in range(s1) :
-            x_test[i] = np.array( [ np.pad(x_test_old[i], ((190-s3,0),(0,0)), 'constant') ] )
+            x_test[i] = np.array( [ np.pad(x_test_old[i], ((378-s3,0),(0,0)), 'constant') ] )
             
 
         true_summary = doc[2]
