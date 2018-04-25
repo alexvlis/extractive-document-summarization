@@ -30,7 +30,7 @@ def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
     # word group filters of size conv_window_size:
     model.add(Conv2D(input_shape=input_shape,
                         filters=num_filters,
-                        kernel_size=(1, conv_window_size),
+                        kernel_size=(3, conv_window_size),
                         padding="valid",
                         activation="relu",
                         strides=1,
