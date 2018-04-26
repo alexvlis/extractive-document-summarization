@@ -30,15 +30,22 @@ def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
     # word group filters of size conv_window_size:
     model.add(Conv2D(input_shape=input_shape,
                         filters=num_filters,
+<<<<<<< HEAD
+                        kernel_size=conv_window_size,
+=======
                         kernel_size=(3, conv_window_size),
+>>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
                         padding="valid",
                         activation="relu",
                         strides=1,
                         data_format='channels_first'))
+<<<<<<< HEAD
+=======
     
     model.add(MaxPooling2D(pool_size=(num_filters, 1)))
+>>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
 
-    #Fully Connected + Dropout + sigmoid
+    model.add(MaxPooling2D(pool_size=(num_filters, 1)))    
     model.add(Flatten())
     model.add(Dropout(dropout))
     model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(reg)))
@@ -61,14 +68,14 @@ def train(model, x_train, y_train, val_train_ratio=0.2, epochs=1000, batch_size=
 
 def load_data():
     print("loading pickle files...")
-    data1 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency1.pickle", "rb"))
-    data2 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency2.pickle", "rb"))
-    data3 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency3.pickle", "rb"))
-    data4 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency4.pickle", "rb"))
-    data5 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency5.pickle", "rb"))
-    data6 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency6.pickle", "rb"))
-    data7 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency7.pickle", "rb"))
-    data8 = pickle.load(open("preprocessing/wordEmbeddingsToSaliency8.pickle", "rb"))
+    data1 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency1.pickle", "rb"))
+    data2 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency2.pickle", "rb"))
+    data3 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency3.pickle", "rb"))
+    data4 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency4.pickle", "rb"))
+    data5 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency5.pickle", "rb"))
+    data6 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency6.pickle", "rb"))
+    data7 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency7.pickle", "rb"))
+    data8 = pickle.load(open("/global/scratch/alex_vlissidis/wordEmbeddingsToSaliency8.pickle", "rb"))
 
     print("concatenating data...")
     data = np.concatenate((data1, data2, data3, data4, data5, data6, data7, data8), axis=0)
@@ -95,14 +102,19 @@ def load_data():
 
 def main():
     # Model Hyperparameters
-    conv_window_size = 300
+    conv_window_size = (190, 300)
     num_filters = 400
     reg = 0.01
     dropout = 0.5
     
     # Training parameters
+<<<<<<< HEAD
+    epochs = 100
+    batch_size = 256
+=======
     epochs = 25
     batch_size = 128
+>>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
     test_train_ratio = 0.2
     val_train_ratio = 0.2
 
@@ -113,7 +125,11 @@ def main():
     history = train(model, x_train, y_train, val_train_ratio, epochs, batch_size)
 
     print("Saving model...")
+<<<<<<< HEAD
+    model.model.save('model-conv-190.h5') 
+=======
     model.model.save('model.h5')
+>>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
 
     print("Plotting...")
     f, (ax1, ax2) = plt.subplots(2, 1)
@@ -126,8 +142,12 @@ def main():
     ax1.legend()
     ax2.legend()
 
+<<<<<<< HEAD
+    f.savefig('training-conv-190.png', dpi=300)
+=======
     f.savefig('training.png', dpi=300)
     plt.show()
+>>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
     print("Done.")
 
 if __name__ == "__main__":
