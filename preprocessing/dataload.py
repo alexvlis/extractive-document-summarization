@@ -1,8 +1,10 @@
 import numpy as np
 import pickle
 import os
+import re
 from word_embedding import embed_sentences
 from nltk import tokenize
+from rouge import Rouge
 
 
 def splitAndSanitizeIntoSentences(text):
@@ -21,10 +23,10 @@ def parsePerdocs(path):
     f.close()
     
     # nltk attempt
-    #return tokenize.sent_tokenize(fullText) 
     summaries = {} # { docID : summary }
     sumIndex = fullText.find("DOCREF=")
-    
+   
+    # gets all of the summaries and stores them in the appropriate places 
     while sumIndex != -1:
         docID = fullText[sumIndex + 8:fullText.find("\"", sumIndex + 9)]
         
@@ -32,6 +34,8 @@ def parsePerdocs(path):
         endSum = fullText.find("</SUM>", sumIndex)
 
         text = fullText[startSum + 1:endSum]
+        text = text.replace("<P>", " ")
+        text = text.replace("</P>", " ")
 
         summaries[docID] = text
 
@@ -49,55 +53,23 @@ def extractText(path):
     f.close()        
     sentences = ""
     textIndex = fullText.find("<TEXT>")
+    # extracts the text in the documents
+    # looks for the <TEXT> and </TEXT> tags
     while textIndex != -1: 
-        #sentences.extend(fullText[textIndex + 6 : fullText.find("</TEXT>", textIndex) ])
-
-        #textIndex = fullText.find("<TEXT>", textIndex + 1)
         sentences += fullText[textIndex + 6 : fullText.find("</TEXT>", textIndex) ]
         textIndex = fullText.find("<TEXT>", textIndex + 1)
-    
+
+    #old = sentences
+    sentences = sentences.replace("<P>", " ")
+    sentences = sentences.replace("</P>", " ")
+    #xmlRegex = re.compile("<.*?>.*?</.*?>|<.*?/>", re.IGNORECASE)
+    #sentences = xmlRegex.sub("<.*?>.*?</.*?>|<.*?/>", sentences)
+    #print(old, sentences)
+    sentences = sentences.replace(";", " ")
+
     return tokenize.sent_tokenize(sentences)
 
-def loadTestData(dataRoot):
-    '''
-    load all of the raw files
-    '''
-    sentences = {}
-    summaries = {}   
-
-    test_data = []
- 
-    raw_docs = dataRoot + "/docs/"
-    walker = os.walk(raw_docs)
-    for x in walker:
-        path = x[0]
-        dirs = x[1]
-        files = x[2]    
-    
-        if len(dirs) != 0:
-            continue
-    
-        for f in files:
-            print("file:", path + "/" + f, end="\r") 
-            sentences[f] = extractText(path + "/" + f)
-        
-    raw_summaries = dataRoot + "/summaries/"
-    walker = os.walk(raw_summaries)
-    for x in walker:
-        path = x[0]
-        dirs = x[1]
-        files = x[2]
-        
-        if len(dirs) != 0:
-            continue 
-
-        for f in files:
-            print("summary file:", path + "/" + f, end="\r") 
-            tmpSummaries = parsePerdocs(path + "/" + f)
-            for k in tmpSummaries.keys():
-                summaries[k] = tmpSummaries[k]
-
-   
+def _countMatchingTestData(sentences, summaries):
     size = 0
     hit = 0
     hitsize = 0 
@@ -106,13 +78,13 @@ def loadTestData(dataRoot):
             hit += 1
             hitsize += len(sentences[s])
         size += len(sentences[s]) 
-        
-    print(size)
-    print(hit, "/", len(sentences))
-    print(hitsize)
+    return size, hit, hitsize
 
-    
-    word_embeddings = {}
+def _createEmbeddedTestData(sentences, summaries):
+
+    size, hit, hitsize = _countMatchingTestData(sentences, summaries)
+
+    test_data = []
     count = 0
     max_size = 0
     
@@ -120,15 +92,11 @@ def loadTestData(dataRoot):
     sentences_over_190 = 0
     sentences_removed = 0
     over_190 = False
-    
 
     for s in sentences.keys():
         arr = np.ones((len(sentences[s]), 3), dtype=object) 
         arr[:,0] = "dummy"
         arr[:,1] = np.array(sentences[s])
-        #print(arr.shape)
-        #print(arr)
-        #embedding = embed_sentences(arr, word2vec_limit=None, NUM_WORDS=None )
         embedding = embed_sentences(arr)
         embedding = embedding[0::2]
         
@@ -146,30 +114,119 @@ def loadTestData(dataRoot):
             continue
         
         count += len(sentences[s])
-        #print(embedding.shape)
-        #print(len(embedding[0::2]))
         test_data.append((np.array(sentences[s]), np.array(embedding), np.array(summaries[s])))
         print("Finished", count, "of", size,"sentences --", count/size,"%", end='\r')
-            
-    #print("size of test_data:", len(test_data))
-    #print("maximum embedding was", max_size) 
-    #print("docs over 190:", documents_over_190)
-    #print("sentences over 190:", sentences_over_190)
-    #print("removed sentences:", sentences_removed)
-
-    totalCount = 0
-    for x in test_data:
-        totalCount += len(x[0])
-    #print(" full count:", totalCount)
-
     return test_data
+    
+def loadTestData(dataRoot):
+    '''
+    load all of the test files -- specifically built for DUC2002
+    '''
+    sentences = {}
+    summaries = {}   
+
+    test_data = []
+
+    # gets the raw documents 
+    raw_docs = dataRoot + "/docs/"
+    walker = os.walk(raw_docs)
+    for x in walker:
+        path = x[0]
+        dirs = x[1]
+        files = x[2]    
+    
+        if len(dirs) != 0:
+            continue
+    
+        for f in files:
+            print("file:", path + "/" + f, end="\r") 
+            sentences[f] = extractText(path + "/" + f)
         
+    # fetches the summaries
+    raw_summaries = dataRoot + "/summaries/"
+    walker = os.walk(raw_summaries)
+    for x in walker:
+        path = x[0]
+        dirs = x[1]
+        files = x[2]
         
+        if len(dirs) != 0:
+            continue 
+
+        for f in files:
+            print("summary file:", path + "/" + f, end="\r") 
+            tmpSummaries = parsePerdocs(path + "/" + f)
+            for k in tmpSummaries.keys():
+                summaries[k] = tmpSummaries[k]
+
+   
+    size, hit, hitsize = _countMatchingTestData(sentences, summaries)   
+
+    embedded = _createEmbeddedTestData(sentences, summaries)
+    return embedded
+    
+           
+      
+
+def _calculateNumberOfSentences(summaries, data):
+    '''
+    Calculates the number of sentences in the data
+    useful so that we dont need to reshape the numpy array a large number of times
+    
+    it also verifies that both of the keys appear in the dictionaries -- only counting sentences
+        of documents that have matching summaries
+    '''
+    incorrect = 0
+    totalSentences = 0
+    for k in data.keys():
+        if k not in summaries:
+            print(" key not found in summaries", k)
+            incorrect += len(data[k])
+            continue
+        totalSentences += len(data[k])
+    return totalSentences
+      
+ 
+def _packageInNumpyArray(summaries, data, saliency):
+    '''
+    Takes in the summaries and the data and then creates a numpy array [[docID, sentence1, summary],
+                                                                        [docID, sentence2, summary],
+                                                                                   ...          
+    '''
+    
+    totalSentences = _calculateNumberOfSentences(summaries, data)
+    cind = 0
+    seen = 0
+    skipped = 0
+    parsed = 0
+    nx3output = np.zeros((totalSentences, 3), dtype=object)
+    for k in data.keys():
+        if k not in summaries.keys():
+            continue
+        seen += 1
+        sentences = data[k]
+        summary = np.array(summaries[k])
+        for s in sentences:
+            nx3output[cind, 0] = k
+            nx3output[cind, 1] = s
+            try:
+                nx3output[cind, 2] = saliency(np.array([s]), summary) 
+                parsed += 1
+                print(" ---- totalSentences:", totalSentences, "cind:", cind)
+            except Exception as e:
+                skipped += 1
+                print("ERROR: Skipping sentence:", s)
+                nx3output[cind, 2] = -1
+            cind += 1
+    print("parsed:", parsed, "Skipped:", skipped)
+    return nx3output
+
+
 
 
 def loadDUC(dataRoot, summarySize, saliency):
     '''
-    parses and returns all of the datasets in the directory
+    parses and returns all of the datasets in the directory -- built specifically for DUC2001
 
     Params:
         dataRoot        - the root directory for the DUC dataset
@@ -192,9 +249,12 @@ def loadDUC(dataRoot, summarySize, saliency):
     # go through all of the roots of the docs
     walker = os.walk(dataRoot)
     for x in walker:
+        
+        # gets all of the info about the specific directory we're in
         path = x[0]
         dirs = x[1]
         files = x[2]
+
         # if docs:
         if len(dirs) == 0: 
             if "perdocs" not in files:
@@ -212,39 +272,7 @@ def loadDUC(dataRoot, summarySize, saliency):
                 summaries = parsePerdocs(path + "/perdocs")
                 for k in summaries.keys():
                     rawSummaries[k] = summaries[k]
-
-    incorrect = 0
-    totalSentences = 0
-    for k in rawData.keys():
-        if k not in rawSummaries:
-            print(" key not found in summaries", k)
-            incorrect += len(rawData[k])
-            continue
-        totalSentences += len(rawData[k])
-     
-    cind = 0
-    seen = 0
-    nx3output = np.zeros((totalSentences, 3), dtype=object)
-    for k in rawData.keys():
-        if k not in rawSummaries.keys():
-            continue
-        seen += 1
-        sentences = rawData[k]
-        for s in sentences:
-            nx3output[cind, 0] = k
-            nx3output[cind, 1] = s
-            #print(np.array([s]), np.array(rawSummaries[k])[2])
-            #print("s", np.array([s]), "\nsummary", np.array(rawSummaries[k]))
-            #print("SALIENCY:", saliency(np.array([s]), np.array(rawSummaries[k])))
-            try:
-#            print()
-                nx3output[cind, 2] = saliency(np.array([s]), np.array(rawSummaries[k])) 
-                print(" ---- totalSentences:", totalSentences, "cind:", cind)
-            except Exception as e:
-                print("ERROR: Skipping sentence:", s)
-                nx3output[cind, 2] = -1
-            cind += 1
-
+    nx3output = _packageInNumpyArray(rawSummaries, rawData, saliency)
     return nx3output
 
 # returns numpy array with the information
@@ -260,9 +288,10 @@ def dummy(sentence, summary):
     return 0
 
 def main():
-    data = loadTestData("../data/DUC2002_Summarization_Documents")
-    #data = loadDUC("../data/DUC2001_Summarization_Documents/data/training", 100, dummy)
-    print(data)
+    r = Rouge()
+    testdata = loadTestData("../data/test_subset")
+    #data = loadDUC("../data/subset/data/training", 100, r.saliency)
+    print(testdata)
     #data = loadFromPickle("sentencesToSaliency.pickle")
     #print(data)
 
