@@ -40,6 +40,13 @@ def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 1
     evals = []
     summaries = []    
 
+    bestPred = []
+    bestTrue = []
+    worstPred = []
+    worstTrue = []
+    bestScore = -1.0
+    worstScore = 1.1
+    
     for doc in testing_data: 
         sentences = doc[0]
         
@@ -47,9 +54,9 @@ def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 1
         s1 = x_test_old.shape[0]
         (s3,s4) = x_test_old[0].shape
         print(s1,s3,s4)
-        x_test = np.random.rand(s1,1,378,s4)
+        x_test = np.random.rand(s1,1,190,s4)
         for i in range(s1) :
-            x_test[i] = np.array( [ np.pad(x_test_old[i], ((378-s3,0),(0,0)), 'constant') ] )
+            x_test[i] = np.array( [ np.pad(x_test_old[i], ((190-s3,0),(0,0)), 'constant') ] )
             
 
         true_summary = doc[2]
@@ -67,7 +74,7 @@ def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 1
             sentence = sentences[argsorted_scores[i]]
             #if ( dummy_rouge( sentence , predicted_summary ) < threshold ):
             sentence = np.array([sentence])
-            print(sentence, predicted_summary)
+            #print(sentence, predicted_summary)
             if (rouge.saliency(sentence, np.array(predicted_summary)) < threshold):
                 predicted_summary.append(sentence)
                 summary_length += len(sentence[0].split())
@@ -82,18 +89,32 @@ def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 1
             N = 0 
             
         #evals.append(dummy_rouge( predicted_summary, true_summary, alpha = N))
+        score = rouge.saliency(predicted_summary, true_summary, alpha=N)
+        if score > bestScore:
+            bestScore = score
+            bestPred = predicted_summary
+            bestTrue = true_summary
+        if score < worstScore:
+            worstScore = score
+            worstPred = predicted_summary
+            worstTrue = true_summary
         evals.append(rouge.saliency(predicted_summary, true_summary, alpha=N))
         summaries.append((predicted_summary, true_summary))
 
-    print("&& PRINTING SUMMARIES && ")
-
-    for s in summaries:
-        print(" -- predicted")
-        print(s[0])
-        print()
-        print(" ++ true")
-        print(s[1])
-        print(" -------")
+    print("&& PRINTING BEST AND WORST SUMMARIES && ")
+    
+    print("BEST:")
+    print(" score:", bestScore)
+    print(" predicted:", bestPred)
+    print(" true:", bestTrue)
+    
+    print()
+    print("WORST:")
+    print(" score:", worstScore)
+    print(" predicted:", worstPred)
+    print(" true:", worstTrue)
+    print()
+    print(" *--*--*--*--*--*--*--*")
 
     return np.mean(evals)
     
@@ -105,8 +126,9 @@ def main():
     print(testing_data)
     
     rouge1_score = test(model, testing_data, upper_bound=100, metric = "ROUGE1")
-    #rouge2_score = test(model, testing_data, upper_bound=5, metric = "ROUGE2")
-    print(rouge1_score)
+    rouge2_score = test(model, testing_data, upper_bound=5, metric = "ROUGE2")
+    print("ROUGE1:",rouge1_score)
+    print("ROUGE2:",rouge2_score)
 
 if __name__ == "__main__":
     main()

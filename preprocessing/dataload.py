@@ -131,6 +131,7 @@ def loadTestData(dataRoot):
         #embedding = embed_sentences(arr, word2vec_limit=None, NUM_WORDS=None )
         embedding = embed_sentences(arr)
         embedding = embedding[0::2]
+        
         for e in embedding:
             if len(e) > max_size:
                 max_size = len(e)
