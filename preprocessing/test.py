@@ -2,6 +2,7 @@ import numpy as np
 from keras.models import load_model
 from dataload import loadTestData
 from rouge import Rouge
+import nltk
 
 def dummy_rouge(sentence, summary, alpha=0.5):
     if sentence in summary:
@@ -37,15 +38,23 @@ def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 1
             eval                   - float between 0 and 1. 
     """   
     rouge = Rouge()
-    evals = []
+    r1evals = []
+    r2evals = []
     summaries = []    
 
-    bestPred = []
-    bestTrue = []
-    worstPred = []
-    worstTrue = []
-    bestScore = -1.0
-    worstScore = 1.1
+    r1bestPred = []
+    r1bestTrue = []
+    r1worstPred = []
+    r1worstTrue = []
+    r1bestScore = -1.0
+    r1worstScore = 1.1
+    
+    r2bestPred = []
+    r2bestTrue = []
+    r2worstPred = []
+    r2worstTrue = []
+    r2bestScore = -1.0
+    r2worstScore = 1.1
     
     for doc in testing_data: 
         sentences = doc[0]
@@ -75,58 +84,87 @@ def test(model, testing_data, batch_size = 128, upper_bound = 100, threshold = 1
             #if ( dummy_rouge( sentence , predicted_summary ) < threshold ):
             sentence = np.array([sentence])
             #print(sentence, predicted_summary)
-            if (rouge.saliency(sentence, np.array(predicted_summary)) < threshold):
-                predicted_summary.append(sentence)
-                summary_length += len(sentence[0].split())
+            predicted_summary.append(sentence)
+            summary_length += len(nltk.word_tokenize(sentence[0]))
                 
             i+=1
         
         #print(predicted_summary)
         
-        if metric == "ROUGE1" :
-            N = 1
-        elif metric == "ROUGE2":
-            N = 0 
+        #if metric == "ROUGE1" :
+        #    N = 1
+        #elif metric == "ROUGE2":
+        #    N = 0 
             
         #evals.append(dummy_rouge( predicted_summary, true_summary, alpha = N))
-        score = rouge.saliency(predicted_summary, true_summary, alpha=N)
-        if score > bestScore:
-            bestScore = score
-            bestPred = predicted_summary
-            bestTrue = true_summary
-        if score < worstScore:
-            worstScore = score
-            worstPred = predicted_summary
-            worstTrue = true_summary
-        evals.append(rouge.saliency(predicted_summary, true_summary, alpha=N))
+        r1score = rouge.saliency(predicted_summary, true_summary, alpha=1)
+        r2score = rouge.saliency(predicted_summary, true_summary, alpha=0)
+
+        if r1score > r1bestScore:
+            r1bestScore = r1score
+            r1bestPred = predicted_summary
+            r1bestTrue = true_summary
+        if r1score < r1worstScore:
+            r1worstScore = r1score
+            r1worstPred = predicted_summary
+            r1worstTrue = true_summary
+        
+        if r2score > r2bestScore:
+            r2bestScore = r2score
+            r2bestPred = predicted_summary
+            r2bestTrue = true_summary
+        if r2score < r2worstScore:
+            r2worstScore = r2score
+            r2worstPred = predicted_summary
+            r2worstTrue = true_summary
+
+        r1evals.append(r1score)
+        r2evals.append(r2score)
+
+        #evals.append(rouge.saliency(predicted_summary, true_summary, alpha=N))
         summaries.append((predicted_summary, true_summary))
 
     print("&& PRINTING BEST AND WORST SUMMARIES && ")
-    
+   
+    print("ROUGE 1 --") 
     print("BEST:")
-    print(" score:", bestScore)
-    print(" predicted:", bestPred)
-    print(" true:", bestTrue)
+    print(" score:", r1bestScore)
+    print(" predicted:", r1bestPred)
+    print(" true:", r1bestTrue)
     
     print()
     print("WORST:")
-    print(" score:", worstScore)
-    print(" predicted:", worstPred)
-    print(" true:", worstTrue)
+    print(" score:", r1worstScore)
+    print(" predicted:", r1worstPred)
+    print(" true:", r1worstTrue)
     print()
+
+    print("ROUGE 2 --") 
+    print("BEST:")
+    print(" score:", r2bestScore)
+    print(" predicted:", r2bestPred)
+    print(" true:", r2bestTrue)
+    
+    print()
+    print("WORST:")
+    print(" score:", r2worstScore)
+    print(" predicted:", r2worstPred)
+    print(" true:", r2worstTrue)
+
     print(" *--*--*--*--*--*--*--*")
 
-    return np.mean(evals)
+    return np.mean(r1evals), np.mean(r2evals)
     
 
 def main():
-    model = load_model('../model.h5')
+    model = load_model('../model-nfilt-200.h5')
     #testing_data = dummy_loadTestData()
-    testing_data = loadTestData("../data/DUC2002_Summarization_Documents")
+    #testing_data = loadTestData("../data/DUC2002_Summarization_Documents")
+    testing_data = loadTestData("../data/test_subset")
     print(testing_data)
     
-    rouge1_score = test(model, testing_data, upper_bound=100, metric = "ROUGE1")
-    rouge2_score = test(model, testing_data, upper_bound=5, metric = "ROUGE2")
+    rouge1_score, rouge2_score = test(model, testing_data, upper_bound=100, metric = "ROUGE1")
+    #rouge2_score = test(model, testing_data, upper_bound=100, metric = "ROUGE2")
     print("ROUGE1:",rouge1_score)
     print("ROUGE2:",rouge2_score)
 
