@@ -34,10 +34,11 @@ python train.py
 
 ## Results: ##
 ```
+cd preprocessing/
 python test.py
 ```
 | Model           | ROUGE-1       | ROUGE-2  |
 | ----------------|:-------------:| --------:|
 | Zhang et al.    | 48.62%        |   21.99% |
-| Us              | 47.51%        |   22.41% |
+| Our Implementation| 47.51%        |   22.41% |
 | Random Baseline | 32.14%        |   11.39% |
