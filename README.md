@@ -1,5 +1,5 @@
-# Extractive Document Summarization
-Extractive Document Summarization Based on Convolutional Neural Networks.
+# Extractive Document Summarization using CNNs
+Extractive Summarization is a method, which aims to automatically generate summaries of documents through the extraction of sentences in the text. The specific model we implemented is a regression process for sentence ranking. The architecture of this method consists of a convolution layer followed by a max-pooling layer, on top of a pre-trained word2vec mapping. We implemented this new proposed method and perform experiments on single-document extractive summarization.
 
 ## Installation: ##
 ```
@@ -25,3 +25,19 @@ From the ```preprocessing``` directory, execute ```python build_dataset.py```. T
 The first is a pickle file of the sentences to the saliency scores (```sentencesToSaliency.pickle```).
 
 The rest are pickle files of the word embeddings to the saliency scores for each sentences (```wordEmbeddingsToSaliency.pickle```).
+
+## Training: ##
+```
+python train.py
+```
+![alt text](https://github.com/alexvlis/extractive-document-summarization/blob/master/figures/training-conv-190.png "Logo Title Text 1")
+
+## Results: ##
+```
+python test.py
+```
+| Model           | ROUGE-1       | ROUGE-2  |
+| ----------------|:-------------:| --------:|
+| Zhang et al.    | 48.62%        |   21.99% |
+| Us              | 47.51%        |   22.41% |
+| Random Baseline | 32.14%        |   11.39% |
