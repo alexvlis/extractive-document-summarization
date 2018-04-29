@@ -12,12 +12,16 @@ pyrouge_set_rouge_path /global/pathto/extractive-document-summarization/preproce
 source deactivate
 ```
 
+## Download Google's Word2vec: ##
+```
+cd word2vec/
+wget -c "https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz"
+```
 
 ## Data Preprocessing: ##
 
-From the ```preprocessing``` directory, execute ```python3 build_dataset.py```.
-This will dump two pickle files. 
+From the ```preprocessing``` directory, execute ```python build_dataset.py```. This will create multiple pickle files. 
 
 The first is a pickle file of the sentences to the saliency scores (```sentencesToSaliency.pickle```).
 
-The second is a pickle file of the word embeddings to the saliency scores for each sentences (```wordEmbeddingsToSaliency.pickle```).
+The rest are pickle files of the word embeddings to the saliency scores for each sentences (```wordEmbeddingsToSaliency.pickle```).
