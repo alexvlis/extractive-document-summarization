@@ -1,0 +1,44 @@
+<SUM
+DOCSET="d069"
+TYPE="MULTI-E"
+SIZE="200"
+DOCREF="WSJ890922-0113 AP891207-0158 AP890925-0009 AP900321-0057 LA021290-0043 AP900215-0013
+AP891212-0062 AP900131-0068 AP891111-0064 AP900130-0202 FT923-6509 AP900214-0157 AP900210-0106
+AP891202-0154"
+SELECTOR="F"
+SUMMARIZER="B">
+
+<s docid="WSJ890922-0113" num="9" wdcount="30"> The mass emigration of 
+thousands of disaffected East Germans has rekindled reunification talk 
+in West Germany, where some legislators plan to begin exploring the 
+possiblity of reuniting the two Germanys.</s>
+
+<s docid="AP890925-0009" num="21" wdcount="18"> It is a prospect that creates 
+unease in Britain and France, and in Poland in the East bloc.</s>
+
+<s docid="AP890925-0009" num="16" wdcount="35"> Once dismissed as a nostalgic 
+daydream, the idea of German reunification has gotten a public nod from 
+President Bush and something short of a categorical ``no'' from 
+President Mikhail S. Gorbachev of the Soviet Union.</s>
+
+<s docid="AP890925-0009" num="34" wdcount="28"> Since West Germany and East 
+Germany are at the front lines of two competing alliances, any signs 
+for eventual reunification would have to come from Washington and 
+Moscow.</s>
+
+<s docid="AP900130-0202" num="31" wdcount="15"> Modrow said the two Germanys 
+could work toward confederation in phases with no time limit.</s>
+
+<s docid="AP900210-0106" num="16" wdcount="31"> Earlier Saturday, West German 
+Finance Minister Theo Waigel said the East German economy was in a 
+``sorrowful state'' and urged the East German government to release 
+details on its financial situation.</s>
+
+<s docid="AP900321-0057" num="11" wdcount="19"> ``The world is expecting a 
+Jewish statement on reunification,'' said Edgar Bronfman, the president 
+of the World Jewish Congress.</s>
+
+<s docid="LA021290-0043" num="9" wdcount="23"> West German Chancellor Helmut 
+Kohl declared on his return from Moscow on Sunday that "the way is now 
+free" for German reunification .</s>
+</SUM>

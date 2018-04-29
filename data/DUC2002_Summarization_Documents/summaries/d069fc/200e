@@ -1,0 +1,40 @@
+<SUM
+DOCSET="d069"
+TYPE="MULTI-E"
+SIZE="200"
+DOCREF="WSJ890922-0113 AP891207-0158 AP890925-0009 AP900321-0057 LA021290-0043 AP900215-0013
+AP891212-0062 AP900131-0068 AP891111-0064 AP900130-0202 FT923-6509 AP900214-0157 AP900210-0106
+AP891202-0154"
+SELECTOR="F"
+SUMMARIZER="C">
+
+<s docid="AP891111-0064" num="10" wdcount="32"> The lifting of travel restrictions by 
+East Germany on Thursday has breathed new life into the idea of a single German 
+state, drawing expressions of support from the Bush administration and 
+others.</s>
+
+<s docid="AP890925-0009" num="15" wdcount="27"> The daily sight of thousands of 
+refugees fleeing East German leader Erich Honecker's hard-line Communist rule 
+for the capitalist West has revived international interest in the debate.</s>
+
+<s docid="AP891212-0062" num="12" wdcount="23"> The Communist Party today admitted 
+that East Germany's socialist system has failed, and expressed support for a 
+type of partnership with West Germany.</s>
+
+<s docid="AP900130-0202" num="13" wdcount="22"> President Mikhail S. Gorbachev met 
+Tuesday with East German Premier Hans Modrow and appeared to be more open toward 
+eventual German reunification.</s>
+
+<s docid="AP900130-0202" num="33" wdcount="41"> According to Tass, the Soviet leader 
+said any action on reunification must not infringe on the interests of either 
+East or West Germany, the four Allied powers: France, Britain, the United States 
+or the Soviet Union, or anyone else in Europe.</s>
+
+<s docid="AP900215-0013" num="10" wdcount="24"> For the most part, the historians say 
+an East Germany collapsing into chaos represents a greater threat to stability 
+than a united German state.</s>
+
+<s docid="LA021290-0043" num="15" wdcount="29"> Asked how soon the two Germanys could 
+merge, Kohl declared that the March election has to come first, and "then I 
+think it will all go very quickly" .</s>
+</SUM>

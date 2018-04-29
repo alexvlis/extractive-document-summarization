@@ -1,0 +1,30 @@
+<SUM
+DOCSET="d062"
+TYPE="MULTI-E"
+SIZE="200"
+DOCREF="AP891018-0301 WSJ891019-0021 WSJ891019-0086 LA102089-0177 LA102489-0131"
+SELECTOR="J"
+SUMMARIZER="A">
+<s docid="LA102089-0177" num="6" wdcount="4"> THE BAY AREA QUAKE;</s>  
+<s docid="WSJ891019-0021" num="10" wdcount="21"> In the aftermath of the California 
+earthquake, President Bush and his aides flew into a whirlwind of earthquake-
+related activity yesterday morning.</s>
+<s docid="WSJ891019-0021" num="11" wdcount="27"> Some of it was necessary to get 
+federal help flowing to victims, but some seemed designed mostly to project an 
+image of a White House in action.</s>
+<s docid="LA102489-0131" num="8" wdcount="44"> With Congress already moving to grant 
+up to $3 billion in relief, earthquake victims need to know that state officials 
+are prepared to come up with the state's share of disaster and reconstruction 
+aid as soon as possible, and as soon as is practical.</s>
+<s docid="WSJ891019-0086" num="28" wdcount="17"> Roads and bridges in the Bay area 
+appear to have suffered some of the most costly damage.</s>
+<s docid="LA102489-0131" num="24" wdcount="26"> In the Bay Area, that includes 
+hundreds of thousands of commuters who did not suffer personal damage, but face 
+massive obstacles in getting to work .</s>
+<s docid="WSJ891019-0086" num="50" wdcount="28"> He is estimating this week's disaster 
+will generate insured losses of $2 billion to $4 billion, following about $4 
+billion in costs to insurers from Hurricane Hugo .</s>
+<s docid="AP891018-0301" num="12" wdcount="23"> The organization estimated residential 
+damages from Tuesday's earthquake at $500 million in the Bay area, with between 
+$100 million to $150 million insured.</s>
+</SUM>

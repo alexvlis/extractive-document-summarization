@@ -1,0 +1,33 @@
+<SUM
+DOCSET="d062"
+TYPE="MULTI-E"
+SIZE="200"
+DOCREF="AP891018-0301 WSJ891019-0021 WSJ891019-0086 LA102089-0177 LA102489-0131"
+SELECTOR="J"
+SUMMARIZER="G">
+<s docid="WSJ891019-0021" num="10" wdcount="21"> In the aftermath of the California 
+earthquake, President Bush and his aides flew into a whirlwind of earthquake-
+related activity yesterday morning.</s>
+<s docid="WSJ891019-0021" num="11" wdcount="27"> Some of it was necessary to get
+federal help flowing to victims, but 
+some seemed designed mostly to project an image of a White House in action.</s> 
+<s docid="LA102489-0131" num="7" wdcount="28"> Gov. George Deukmejian is right to call 
+the Legislature into special session within the next two weeks to deal with the 
+effects of last Tuesday's Northern California earthquake.</s>
+<s docid="AP891018-0301" num="9" wdcount="34"> Most San Francisco-area homeowners may 
+have to pay for damage from Tuesday's earthquake out of their own pockets, while 
+insurance companies may reap long-term benefits from higher rates, industry 
+spokesmen and analysts said Wednesday.</s> 
+<s docid="AP891018-0301" num="11" wdcount="26"> The Association of California Insurance Cos. in Sacramento said that 
+in the San Francisco area roughly 25 to 30 percent of the homes have earthquake 
+insurance.</s> 
+<s docid="AP891018-0301" num="16" wdcount="15"> Some estimated that 
+insurers might face bills totaling $1 billion or more from the quake.</s> 
+<s docid="AP891018-0301" num="17" wdcount="17"> But industry observers said they don't 
+expect any company to suffer serious financial damage from quake-related 
+claims.</s>  
+<s docid="WSJ891019-0086" num="12" wdcount="33"> But investors are 
+betting that the financial and psychological impact of the earthquake, coming so 
+soon after the hurricane, will help stem more than two years of intense price-
+cutting wars among business insurers.</s> 
+</SUM>
