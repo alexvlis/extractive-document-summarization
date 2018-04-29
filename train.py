@@ -30,25 +30,16 @@ def build_model(input_shape, conv_window_size, num_filters, reg, dropout):
     # word group filters of size conv_window_size:
     model.add(Conv2D(input_shape=input_shape,
                         filters=num_filters,
-<<<<<<< HEAD
                         kernel_size=conv_window_size,
-=======
-                        kernel_size=(3, conv_window_size),
->>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
                         padding="valid",
                         activation="relu",
                         strides=1,
                         data_format='channels_first'))
-<<<<<<< HEAD
-=======
     
-    model.add(MaxPooling2D(pool_size=(num_filters, 1)))
->>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
-
     model.add(MaxPooling2D(pool_size=(num_filters, 1)))    
     model.add(Flatten())
     model.add(Dropout(dropout))
-    model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(reg)))
+    model.add(Dense(1, activation='softmax', kernel_regularizer=regularizers.l2(reg)))
     
     #In addition, an l2−norm constraint of the weights w_r is imposed during training as well
 
@@ -102,19 +93,14 @@ def load_data():
 
 def main():
     # Model Hyperparameters
-    conv_window_size = (190, 300)
+    conv_window_size = (3, 300)
     num_filters = 400
     reg = 0.01
     dropout = 0.5
     
     # Training parameters
-<<<<<<< HEAD
-    epochs = 100
+    epochs = 10
     batch_size = 256
-=======
-    epochs = 25
-    batch_size = 128
->>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
     test_train_ratio = 0.2
     val_train_ratio = 0.2
 
@@ -125,11 +111,7 @@ def main():
     history = train(model, x_train, y_train, val_train_ratio, epochs, batch_size)
 
     print("Saving model...")
-<<<<<<< HEAD
-    model.model.save('model-conv-190.h5') 
-=======
-    model.model.save('model.h5')
->>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
+    model.model.save('model-softmax.h5')
 
     print("Plotting...")
     f, (ax1, ax2) = plt.subplots(2, 1)
@@ -142,12 +124,8 @@ def main():
     ax1.legend()
     ax2.legend()
 
-<<<<<<< HEAD
-    f.savefig('training-conv-190.png', dpi=300)
-=======
-    f.savefig('training.png', dpi=300)
+    f.savefig('training-softmax.png', dpi=300)
     plt.show()
->>>>>>> 9a8ba428670dc110b1cdc1e4ac4e003bbef5bb55
     print("Done.")
 
 if __name__ == "__main__":
